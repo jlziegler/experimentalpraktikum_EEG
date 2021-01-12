@@ -1,0 +1,12 @@
+---
+title: "EEG Analysis Dorie"
+author: "Joshua Ziegler"
+date: "12.01.2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(eegUtils)
+```
+
+
