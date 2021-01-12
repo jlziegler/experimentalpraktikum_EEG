@@ -5,8 +5,41 @@ date: "12.01.2021"
 output: html_document
 ---
 
+Vor der Analyse in R:    
+
+- Einladen der Daten in EEGLab    
+- Exportieren als .set -> wird hierfür MNE benötigt?    
+- oder exportieren als EDF? -> benötigt biosig
+
 ```{r setup, include=FALSE}
-library(eegUtils)
+# packages
+library(eegUtils) # angefangen mit Version 0.5.0
+library(tidyverse)
 ```
 
+1. Schritt:     
+Laden der Daten in EEGLAB -> exportieren als .set -> laden des Datensets in R (.set & .fdt benötigt):   
+```{r load data, echo=T}
+test <- import_set("./raw/DOR_02.set")
+```
+
+Fehlermeldung:
+
+> Fehler: Can't subset columns that don't exist.  
+> x Column `epoch` doesn't exist.
+
+-> Muss wirklich schon die Epochierung gemacht sein? Wozu gibt es dann die Funktion ```epoch_data()```? -> Erstmal versuchen, die Channel-Locations zu definieren   
+
+Versuch 2 (Channel Locations in EEGLAB definiert):
+
+-> gleiche Fehlermeldung -> nächster Schritt: Develop Branch von GitHub geladen:   
+```remotes::install_github("craddm/eegUtils@develop")```    
+
+Versuch 3: versuchen die .vhdr-Datei mit der Funktion ```import_raw()``` zu laden:
+
+```{r import raw, echo=T}
+test <- import_raw("./raw/DOR02.vhdr")
+```
+
+-> klappt! Einzige Sorge: **"No channel locations found"** -> nur für Topo relevant
 
