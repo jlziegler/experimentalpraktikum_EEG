@@ -42,4 +42,11 @@ test <- import_raw("./raw/DOR02.vhdr")
 ```
 
 -> klappt! Einzige Sorge: **"No channel locations found"** -> nur für Topo relevant
+-> Lösung: ```electrode_locations()```
+
+
+
+
+
+#######
 
