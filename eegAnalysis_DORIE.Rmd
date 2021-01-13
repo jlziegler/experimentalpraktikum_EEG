@@ -44,7 +44,10 @@ test <- import_raw("./raw/DOR02.vhdr")
 -> klappt! Einzige Sorge: **"No channel locations found"** -> nur für Topo relevant
 -> Lösung: ```electrode_locations()```
 
+Nächste Schritte:   
 
+- Re-ref: ```eeg_reference(data, ref_chans = c("A1", "A2"))```    
+- Browse Data: ```browse_data(data)```
 
 
 
