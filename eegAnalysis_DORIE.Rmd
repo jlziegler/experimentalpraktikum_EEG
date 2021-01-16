@@ -37,17 +37,29 @@ Versuch 2 (Channel Locations in EEGLAB definiert):
 
 Versuch 3: versuchen die .vhdr-Datei mit der Funktion ```import_raw()``` zu laden:
 
+# Daten importieren
 ```{r import raw, echo=T}
-test <- import_raw("./raw/DOR02.vhdr")
+dor02_raw <- import_raw("./raw/DOR02.vhdr")
 ```
 
 -> klappt! Einzige Sorge: **"No channel locations found"** -> nur für Topo relevant
 -> Lösung: ```electrode_locations()```
 
+# Channel-Locations zuweisen
+```{r channel locations, echo=T}
+dor02_chl <- electrode_locations(dor02_raw, overwrite = T)
+```
+
+# Vorverarbeitung   
+
+## Daten filtern
+
+
 Nächste Schritte:   
 
 - Re-ref: ```eeg_reference(data, ref_chans = c("A1", "A2"))```    
 - Browse Data: ```browse_data(data)```
+- Plot Power Spectral Density: ```plot_psd()```
 
 
 
