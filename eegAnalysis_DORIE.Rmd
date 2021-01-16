@@ -103,7 +103,7 @@ Funktionensammlung:
 - Browse Data: ```browse_data(data)```
 - Plot Power Spectral Density: ```plot_psd()```
 - Eventliste: ```list_events()```
-
+- ERP-Plot Example: ```plot_timecourse(dor02_epo, "FCz", colour = "event_type")``` -> plot Funktionen sind ggplot objekte!
 
 
 #######
