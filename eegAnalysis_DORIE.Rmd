@@ -1,5 +1,5 @@
 ---
-title: "EEG Analysis Dorie"
+title: "EEG Analysis Dorie (iMMN)"
 author: "Joshua Ziegler"
 date: "12.01.2021"
 output: html_document
@@ -73,11 +73,11 @@ dor02_ref <- eeg_reference(dor02_flt,
 
 
 
-Nächste Schritte:   
+Funktionensammlung:   
 
-- Re-ref: ```eeg_reference(data, ref_chans = c("A1", "A2"))```    
 - Browse Data: ```browse_data(data)```
 - Plot Power Spectral Density: ```plot_psd()```
+- Eventliste: ```list_events()```
 
 
 
