@@ -47,7 +47,9 @@ dor02_raw <- import_raw("./raw/DOR02.vhdr")
 
 # Channel-Locations zuweisen
 ```{r channel locations, echo=T}
-dor02_chl <- electrode_locations(dor02_raw, overwrite = T)
+dor02_chl <- electrode_locations(dor02_raw, 
+                                 overwrite = T
+                                 )
 ```
 
 # Vorverarbeitung   
@@ -57,8 +59,18 @@ dor02_chl <- electrode_locations(dor02_raw, overwrite = T)
 dor02_flt <- eeg_filter(dor02_chl,
                         low_freq = 0.1,
                         high_freq = 30,
-                        method = "fir")
+                        method = "fir"
+                        )
 ```
+
+## Re-Referenzierung
+```{r re-ref, echo=T}
+dor02_ref <- eeg_reference(dor02_flt, 
+                           ref_chans = c("A1", "A2")
+                           )
+```
+
+
 
 
 Nächste Schritte:   
