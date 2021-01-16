@@ -53,6 +53,12 @@ dor02_chl <- electrode_locations(dor02_raw, overwrite = T)
 # Vorverarbeitung   
 
 ## Daten filtern
+```{r bandpass, echo=T}
+dor02_flt <- eeg_filter(dor02_chl,
+                        low_freq = 0.1,
+                        high_freq = 30,
+                        method = "fir")
+```
 
 
 Nächste Schritte:   
