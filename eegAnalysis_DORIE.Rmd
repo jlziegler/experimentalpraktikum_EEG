@@ -39,7 +39,7 @@ Versuch 3: versuchen die .vhdr-Datei mit der Funktion ```import_raw()``` zu lade
 
 # Daten importieren
 ```{r import raw, echo=T}
-dor02_raw <- import_raw("./raw/DOR02.vhdr")
+dor02_raw <- import_raw("./raw/DOR02.vhdr", participant_id = "DOR02")
 ```
 
 -> klappt! Einzige Sorge: **"No channel locations found"** -> nur für Topo relevant
@@ -70,6 +70,31 @@ dor02_ref <- eeg_reference(dor02_flt,
                            )
 ```
 
+## Ausschließen der Muskelartefakte
+????
+
+## Epochierung
+```{r epoch, echo=T}
+dor02_epo <- epoch_data(dor02_ref,
+                        events = c("S111",
+                                   "S112",
+                                   "S212",
+                                   "S211",
+                                   "S121",
+                                   "S123",
+                                   "S223",
+                                   "S221"),
+                        epoch_labels = c("oeStan",    # o-e (o-Standard)
+                                         "eoStan",    
+                                         "oeDev",
+                                         "eoDev",     # e-o (o-Deviant)
+                                         "ouStan",
+                                         "uoStan",
+                                         "ouDev",
+                                         "uoDev"),
+                        time_lim = c(-.2, .8),
+                        baseline = c(-.2, 0))
+```
 
 
 
