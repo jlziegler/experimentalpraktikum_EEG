@@ -109,11 +109,14 @@ Funktionensammlung:
 ```{r}
 # grober example plot
 dor02_epo %>%
-select_elecs(c("F8", "FC6")) %>%
-filter(epoch_labels %in% c("uoDev", "ouStan")) %>%
-as.data.frame(long = TRUE) %>%
-ggplot(aes(x = time, y = amplitude)) +
-stat_summary(fun.y = mean, geom = "line", aes(colour = epoch_labels)) + facet_wrap(~electrode)
+    filter(epoch_labels %in% c("uoDev", "ouStan")) %>%
+    as.data.frame(long = TRUE) %>%
+    filter(electrode == "FC6") %>%
+    ggplot(aes(x = time, y = amplitude)) +
+      stat_summary(fun = mean, 
+                 geom = "line", 
+                aes(colour = epoch_labels)) + 
+      facet_wrap(~electrode)
 ```
   
 - Remove EOG using regession: ```dor02_eog <- ar_eogreg(dor02_epo, heog = c("HEOGli", "HEOGre"), veog = c("VEOGo", "VEOGu"), bipolarize = TRUE)```    
