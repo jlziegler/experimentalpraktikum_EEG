@@ -20,7 +20,7 @@ library(tidyverse)
 1. Schritt:     
 Laden der Daten in EEGLAB -> exportieren als .set -> laden des Datensets in R (.set & .fdt benötigt):   
 ```{r load data, echo=T}
-test <- import_set("./raw/DOR_02.set")
+# test <- import_set("./raw/DOR_02.set")
 ```
 
 Fehlermeldung:
@@ -98,13 +98,36 @@ dor02_epo <- epoch_data(dor02_ref,
 
 
 
+
+
 Funktionensammlung:   
 
 - Browse Data: ```browse_data(data)```
 - Plot Power Spectral Density: ```plot_psd()```
 - Eventliste: ```list_events()```
-- ERP-Plot Example: ```plot_timecourse(dor02_epo, "FCz", colour = "event_type")``` -> plot Funktionen sind ggplot objekte!
+- ERP-Plot Example: ```plot_timecourse(dor02_epo, "FCz", colour = "event_type")``` -> plot Funktionen sind ggplot objekte! 
+```{r}
+# grober example plot
+dor02_epo %>%
+select_elecs(c("F8", "FC6")) %>%
+filter(epoch_labels %in% c("uoDev", "ouStan")) %>%
+as.data.frame(long = TRUE) %>%
+ggplot(aes(x = time, y = amplitude)) +
+stat_summary(fun.y = mean, geom = "line", aes(colour = epoch_labels)) + facet_wrap(~electrode)
+```
+  
+- Remove EOG using regession: ```dor02_eog <- ar_eogreg(dor02_epo, heog = c("HEOGli", "HEOGre"), veog = c("VEOGo", "VEOGu"), bipolarize = TRUE)```    
+- ICA: ```dor02_ICA <- run_ICA(dor02_epo)```    
+- Detect high correlation with EOG channels: ```dor02_eog2 <- ar_eogcor(decomp = dor02_ICA, data = dor02_epo, HEOG = c("HEOGli", "HEOGre"), VEOG = c("VEOGo", "VEOGu"))``` -> Was sagt der plot?    
 
+
+
+To-do:
+- Artefacts   
+- Eye Movement    
+- Grand Average
+- Bins???
+- baseline nur beim plotten?
 
 #######
 
