@@ -97,9 +97,6 @@ dor02_epo <- epoch_data(dor02_ref,
 ```
 
 
-
-
-
 Funktionensammlung:   
 
 - Browse Data: ```browse_data(data)```
@@ -109,14 +106,14 @@ Funktionensammlung:
 ```{r}
 # grober example plot
 dor02_epo %>%
-    filter(epoch_labels %in% c("uoDev", "ouStan")) %>%
-    as.data.frame(long = TRUE) %>%
-    filter(electrode == "FC6") %>%
+    filter(epoch_labels %in% c("uoDev", "ouStan")) %>%  # erst filtern nach Epoche
+    as.data.frame(long = TRUE) %>%   # dann als dataframe
+    filter(electrode == "FC6") %>%   # dann nach elektrode filtern
     ggplot(aes(x = time, y = amplitude)) +
       stat_summary(fun = mean, 
                  geom = "line", 
                 aes(colour = epoch_labels)) + 
-      facet_wrap(~electrode)
+      facet_wrap(~electrode)  # wenn mehrere elektroden
 ```
   
 - Remove EOG using regession: ```dor02_eog <- ar_eogreg(dor02_epo, heog = c("HEOGli", "HEOGre"), veog = c("VEOGo", "VEOGu"), bipolarize = TRUE)```    
@@ -130,7 +127,8 @@ To-do:
 - Eye Movement    
 - Grand Average
 - Bins???
-- baseline nur beim plotten?
+- baseline nur beim plotten? -> wenn mit ggplot geht es evtl nicht anders, als dass schon vorher mit baseline berechnet wird    
+- cluster based permutation test
 
 #######
 
