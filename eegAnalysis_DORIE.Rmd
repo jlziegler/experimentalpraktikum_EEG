@@ -70,9 +70,6 @@ dor02_ref <- eeg_reference(dor02_flt,
                            )
 ```
 
-## Ausschließen der Muskelartefakte
-????
-
 ## Epochierung
 ```{r epoch, echo=T}
 dor02_epo <- epoch_data(dor02_ref,
@@ -96,6 +93,19 @@ dor02_epo <- epoch_data(dor02_ref,
                         baseline = c(-.2, 0))
 ```
 
+# ICA
+
+## Run ICA
+SOBI
+
+```{r ICA, echo=T}
+
+```
+
+
+
+## Ausschließen der Muskelartefakte
+????
 
 Funktionensammlung:   
 
