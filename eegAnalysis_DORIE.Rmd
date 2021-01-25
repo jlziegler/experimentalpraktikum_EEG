@@ -127,17 +127,17 @@ ICA_comp_eog <- ar_eogcor(decomp = dor02_ICA,
 
 ## Muskelartefakte
 ```{r}
-ICA_comp_mus <- 
+ICA_comp_mus <- ar_acf(dor02_ICA)
 ```
 
 ## Channel ICA
 ```{r}
-ICA_comp_chn <- 
+ICA_comp_chn <- ar_chanfoc(dor02_ICA)
 ```
 
 ## Trial ICA
 ```{r}
-ICA_comp_trl <- 
+ICA_comp_trl <- ar_trialfoc(dor02_ICA)
 ```
 
 ## Combine Components
