@@ -154,7 +154,7 @@ Funktionensammlung:
 - ERP-Plot Example: ```plot_timecourse(dor02_epo, "FCz", colour = "event_type")``` -> plot Funktionen sind ggplot objekte! 
 ```{r}
 # grober example plot
-dor02_epo %>%
+dor02_cln %>%
     filter(epoch_labels %in% c("uoDev", "ouStan")) %>%  # erst filtern nach Epoche
     as.data.frame(long = TRUE) %>%   # dann als dataframe
     filter(electrode == "FCz") %>%   # dann nach elektrode filtern
@@ -168,7 +168,7 @@ dor02_epo %>%
 - Plot mit eegUtils Funktion:
 ```{r}
 dor02_cln %>% 
-  select_epochs(epoch_no = dor02_cln$epochs$epoch[dor02_cln$epochs$epoch_labels=="ouStan"]) %>% # wie mehrere Epochen????
+  select_epochs(epoch_no = dor02_cln$epochs$epoch[dor02_cln$epochs$epoch_labels=="ouStan" | dor02_cln$epochs$epoch_labels=="uoDev"]) %>% # mehrere Epochen!
   plot_timecourse("FCz", colour = "epoch_labels") + 
   scale_y_reverse()
 
