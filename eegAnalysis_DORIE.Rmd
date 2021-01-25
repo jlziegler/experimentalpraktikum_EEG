@@ -117,7 +117,11 @@ dor02_ICA <- run_ICA(dor02_epo)
 
 ## Augenbewegungen
 ```{r ICA augen, echo=T}
-
+dor02_eogICA <- ar_eogcor(decomp = dor02_ICA, 
+                          data = dor02_epo, 
+                          HEOG = c("HEOGli", "HEOGre"), 
+                          VEOG = c("VEOGo", "VEOGu")
+                          )
 ```
 
 
@@ -136,6 +140,10 @@ dor02_ICA <- run_ICA(dor02_epo)
 
 ```
 
+## remove components
+```{r}
+dor02_cln <- apply_ica(data = dor02_epo, decomp = dor02_ICA, comps = dor02_eogICA)
+```
 
 Funktionensammlung:   
 
@@ -156,7 +164,15 @@ dor02_epo %>%
                 aes(colour = epoch_labels)) + 
       facet_wrap(~electrode)  # wenn mehrere elektroden
 ```
-  
+- Plot mit eegUtils Funktion:
+```{r}
+dor02_cln %>% 
+  select_epochs(epoch_no = dor02_cln$epochs$epoch[dor02_cln$epochs$epoch_labels=="ouStan"]) %>% # wie mehrere Epochen????
+  plot_timecourse("FCz", colour = "epoch_labels") + 
+  scale_y_reverse()
+
+```
+
 - Remove EOG using regession: ```dor02_eog <- ar_eogreg(dor02_epo, heog = c("HEOGli", "HEOGre"), veog = c("VEOGo", "VEOGu"), bipolarize = TRUE)```    
 - Detect high correlation with EOG channels: ```dor02_eog2 <- ar_eogcor(decomp = dor02_ICA, data = dor02_epo, HEOG = c("HEOGli", "HEOGre"), VEOG = c("VEOGo", "VEOGu"))``` -> Was sagt der plot?    
 - check electrode locations: ```print(dor02_chl$chan_info, n=32)```
@@ -167,7 +183,6 @@ To-do:
 - Artefacts   
 - Eye Movement    
 - Grand Average
-- Bins???
 - baseline nur beim plotten? -> wenn mit ggplot geht es evtl nicht anders, als dass schon vorher mit baseline berechnet wird    
 - cluster based permutation test
 
