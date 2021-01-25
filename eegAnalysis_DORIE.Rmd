@@ -117,7 +117,7 @@ dor02_ICA <- run_ICA(dor02_epo)
 
 ## Augenbewegungen
 ```{r ICA augen, echo=T}
-dor02_eogICA <- ar_eogcor(decomp = dor02_ICA, 
+ICA_comp_eog <- ar_eogcor(decomp = dor02_ICA, 
                           data = dor02_epo, 
                           HEOG = c("HEOGli", "HEOGre"), 
                           VEOG = c("VEOGo", "VEOGu")
@@ -127,22 +127,28 @@ dor02_eogICA <- ar_eogcor(decomp = dor02_ICA,
 
 ## Muskelartefakte
 ```{r}
-
+ICA_comp_mus <- 
 ```
 
 ## Channel ICA
 ```{r}
-
+ICA_comp_chn <- 
 ```
 
 ## Trial ICA
 ```{r}
-
+ICA_comp_trl <- 
 ```
+
+## Combine Components
+```{r}
+ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
+```
+
 
 ## remove components
 ```{r}
-dor02_cln <- apply_ica(data = dor02_epo, decomp = dor02_ICA, comps = dor02_eogICA)
+dor02_cln <- apply_ica(data = dor02_epo, decomp = dor02_ICA, comps = ICA_comp_rem)
 ```
 
 Funktionensammlung:   
@@ -163,17 +169,22 @@ dor02_cln %>%
                  geom = "line", 
                 aes(colour = epoch_labels)) + 
       facet_wrap(~electrode) + # wenn mehrere elektroden
-      scale_y_reverse()
+      scale_y_reverse() + 
+      theme_light() +
+      geom_hline(yintercept = 0) +
+      geom_vline(xintercept = 0)
 ```
 - Plot mit eegUtils Funktion:
 ```{r}
 dor02_cln %>% 
-  select_epochs(epoch_no = dor02_cln$epochs$epoch[dor02_cln$epochs$epoch_labels=="ouStan" | dor02_cln$epochs$epoch_labels=="uoDev"]) %>% # mehrere Epochen!
+  select_epochs(epoch_no = dor02_cln$epochs$epoch
+                [dor02_cln$epochs$epoch_labels == "ouStan" 
+                  | dor02_cln$epochs$epoch_labels == "uoDev"]) %>% # mehrere Epochen!
   plot_timecourse("FCz", colour = "epoch_labels") + 
   scale_y_reverse()
 
 ```
-
+- Idee für Skript von Plots: am Anfang Vektor erstellen, in dem die zu vergleichenden Conditions drin sind: ```epoch_comparisons <- c("ouStan", "uoDev")```, dann in Plot call bei Selektion: ```dor02_cln$epochs$epoch_labels==epoch_comparisons[2]``` -> ist das wirklich notwendig?
 - Remove EOG using regession: ```dor02_eog <- ar_eogreg(dor02_epo, heog = c("HEOGli", "HEOGre"), veog = c("VEOGo", "VEOGu"), bipolarize = TRUE)```    
 - Detect high correlation with EOG channels: ```dor02_eog2 <- ar_eogcor(decomp = dor02_ICA, data = dor02_epo, HEOG = c("HEOGli", "HEOGre"), VEOG = c("VEOGo", "VEOGu"))``` -> Was sagt der plot?    
 - check electrode locations: ```print(dor02_chl$chan_info, n=32)```
