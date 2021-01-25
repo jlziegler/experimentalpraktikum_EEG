@@ -162,7 +162,8 @@ dor02_epo %>%
       stat_summary(fun = mean, 
                  geom = "line", 
                 aes(colour = epoch_labels)) + 
-      facet_wrap(~electrode)  # wenn mehrere elektroden
+      facet_wrap(~electrode) + # wenn mehrere elektroden
+      scale_y_reverse()
 ```
 - Plot mit eegUtils Funktion:
 ```{r}
