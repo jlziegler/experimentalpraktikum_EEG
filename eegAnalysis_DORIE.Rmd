@@ -48,9 +48,12 @@ dor02_raw <- import_raw("./raw/DOR02.vhdr", participant_id = "DOR02")
 # Channel-Locations zuweisen
 ```{r channel locations, echo=T}
 dor02_chl <- electrode_locations(dor02_raw, 
-                                 overwrite = T
+                                 overwrite = T,
+                                 method = "biosemi64"
                                  )
 ```
+Erkennt Augenelektroden und alle mit "z" nicht...
+Manuell hinzufügen?
 
 # Vorverarbeitung   
 
@@ -99,17 +102,45 @@ dor02_epo <- epoch_data(dor02_ref,
 SOBI
 
 ```{r ICA, echo=T}
+dor02_ICA <- run_ICA(dor02_epo)
+```
+
+## Plot ICA
+
+```{r plot ICA, echo=T}
+# interactive:
+# view_ica(dor02_ICA)
+# individual components:
+# topoplot(dor02_ICA, component = 2)
+# plot_timecourse(dor02_ICA, component = 2)
+```
+
+## Augenbewegungen
+```{r ICA augen, echo=T}
 
 ```
 
 
+## Muskelartefakte
+```{r}
 
-## Ausschließen der Muskelartefakte
-????
+```
+
+## Channel ICA
+```{r}
+
+```
+
+## Trial ICA
+```{r}
+
+```
+
 
 Funktionensammlung:   
 
-- Browse Data: ```browse_data(data)```
+- Browse Data: ```browse_data(data)```    
+- ICA Viewer: ```view_ica(dor02_ICA)```
 - Plot Power Spectral Density: ```plot_psd()```
 - Eventliste: ```list_events()```
 - ERP-Plot Example: ```plot_timecourse(dor02_epo, "FCz", colour = "event_type")``` -> plot Funktionen sind ggplot objekte! 
@@ -118,7 +149,7 @@ Funktionensammlung:
 dor02_epo %>%
     filter(epoch_labels %in% c("uoDev", "ouStan")) %>%  # erst filtern nach Epoche
     as.data.frame(long = TRUE) %>%   # dann als dataframe
-    filter(electrode == "FC6") %>%   # dann nach elektrode filtern
+    filter(electrode == "FCz") %>%   # dann nach elektrode filtern
     ggplot(aes(x = time, y = amplitude)) +
       stat_summary(fun = mean, 
                  geom = "line", 
@@ -127,8 +158,8 @@ dor02_epo %>%
 ```
   
 - Remove EOG using regession: ```dor02_eog <- ar_eogreg(dor02_epo, heog = c("HEOGli", "HEOGre"), veog = c("VEOGo", "VEOGu"), bipolarize = TRUE)```    
-- ICA: ```dor02_ICA <- run_ICA(dor02_epo)```    
 - Detect high correlation with EOG channels: ```dor02_eog2 <- ar_eogcor(decomp = dor02_ICA, data = dor02_epo, HEOG = c("HEOGli", "HEOGre"), VEOG = c("VEOGo", "VEOGu"))``` -> Was sagt der plot?    
+- check electrode locations: ```print(dor02_chl$chan_info, n=32)```
 
 
 
