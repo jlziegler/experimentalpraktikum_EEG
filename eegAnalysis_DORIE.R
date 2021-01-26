@@ -23,13 +23,16 @@ for (i in temp){
   )
 }
 
-  
-# electrode locations
-EEG_chl <- electrode_locations(EEG_raw, 
-                                overwrite = T,
-                                method = "biosemi64"
-                              )
 
+DORlist <-
+  lapply(DORlist, function(x){
+# ELECTRODE LOCATIONS
+   x <- electrode_locations(x,
+                           overwrite = T,
+                           method = "biosemi64")
+}
+)
+  
 # filter
 EEG_flt <- eeg_filter(EEG_chl,
                         low_freq = 0.1,
