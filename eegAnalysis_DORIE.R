@@ -11,9 +11,9 @@ temp = list.files(path = "./raw", pattern="*.vhdr")
 # create empty list
 DORlist <- list()
 
-# save all data in list
-for (i in temp){
 # IMPORT DATA
+# & save all data in list
+for (i in temp){
   filename <- paste0(i)     # filename from temp
   DORlist[[i]] <-           # save the following dfs in a list
     assign(filename,        # assign respective filename to data
@@ -24,8 +24,8 @@ for (i in temp){
 }
 
 
-DORlist <-
-  lapply(DORlist, function(x){
+DORlist <-      # overwrite list
+  lapply(DORlist, function(x){     # apply the following to every df in list
 # ELECTRODE LOCATIONS
    x <- electrode_locations(x,
                            overwrite = T,
@@ -38,7 +38,26 @@ DORlist <-
 # RE-REF
    x <- eeg_reference(x, 
                       ref_chans = c("A1", "A2"))
-   
+# EPOCH
+   x <- epoch_data(x, 
+                   events = c("S111",
+                              "S112",
+                              "S212",
+                              "S211",
+                              "S121",
+                              "S123",
+                              "S223",
+                              "S221"), 
+                   epoch_labels = c("oeStan",    # o-e (o-Standard)
+                                    "eoStan",    
+                                    "oeDev",
+                                    "eoDev",     # e-o (o-Deviant)
+                                    "ouStan",
+                                    "uoStan",
+                                    "ouDev",
+                                    "uoDev"),
+                   time_lim = c(-.2, .8),
+                   baseline = c(-.2, 0))
 }
 )
 
