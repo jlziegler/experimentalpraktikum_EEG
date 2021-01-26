@@ -69,11 +69,14 @@ DORlist <-      # overwrite list
 #### END LOOP 2 ####
 
 #### BEGIN LOOP 3 ####
-
-DORlist2 <- lapply(DORlist, function(x){ica <- run_ICA(x)})
-### this currently runs ICA, saves them in a new list, names them like the data, 
-### maybe something like this will work:
-# paste0("ICA_", gsub("*.vhdr$", "", names(x))) <- run_ICA(x)
+# ICA -> DAS MIT DEN FILENAMES KLAPPT NOCH NICHT!
+ICAlist <- 
+  lapply(DORlist, function(x){
+    filename_ICA <- paste0("ICA_", gsub("*.vhdr$", "", names(x)))
+    assign(filename_ICA,
+           run_ICA(x))
+    }
+    )
 
 # Run ICA
 EEG_ICA <- run_ICA(EEG_epo)
