@@ -16,7 +16,7 @@ DORlist <- list()
 # & save all data in list
 for (i in temp){
   filename <- paste0(i)     # filename from temp
-  DORlist[[i]] <-           # save the following dfs in a list
+  DORlist[[i]] <-           # save the following elements in a list
     assign(filename,        # assign respective filename to data
            import_raw(i,    # import data set
                       file_path = "./raw",   # path to subdirectory "raw"
@@ -30,7 +30,7 @@ for (i in temp){
 #### BEGIN LOOP 2 ####
 # Preprocessing
 DORlist <-      # overwrite list
-  lapply(DORlist, function(x){     # apply the following to every df in list
+  lapply(DORlist, function(x){     # apply the following to every element in list
 # ELECTRODE LOCATIONS
    x <- electrode_locations(x,
                            overwrite = T,
@@ -68,18 +68,20 @@ DORlist <-      # overwrite list
 
 #### END LOOP 2 ####
 
+ICAlist <- list()
+
 #### BEGIN LOOP 3 ####
 # ICA -> DAS MIT DEN FILENAMES KLAPPT NOCH NICHT!
 ICAlist <- 
   lapply(DORlist, function(x){
-    filename_ICA <- paste0("ICA_", gsub("*.vhdr$", "", names(x)))
+    filename_ICA <- paste0("ICA_", gsub("*.vhdr$", "", paste(y)))
     assign(filename_ICA,
            run_ICA(x))
     }
     )
 
-# Run ICA
-EEG_ICA <- run_ICA(EEG_epo)
+# add suffix "ICA_" to ICA data
+names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
 
 # ICA EOG
 ICA_comp_eog <- ar_eogcor(decomp = EEG_ICA, 
