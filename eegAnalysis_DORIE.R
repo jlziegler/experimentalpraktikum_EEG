@@ -5,11 +5,22 @@ setwd("~/Documents/UNI/Master/M_Sem 4/experimentalpraktikum/experimentalpraktiku
 library(eegUtils) 
 library(tidyverse)
 
+# list of vhdr files
+temp = list.files(path = "./raw", pattern="*.vhdr")
 
 ##### BEGIN LOOP #####
 
-# import
-EEG_raw <- import_raw("./raw/?.vhdr", participant_id = "?")
+
+for (i in temp){
+# IMPORT DATA
+  filename <- paste0(gsub("*.vhdr$", "", i))     
+  assign(filename,
+         import_raw(i, 
+             file_path = "./raw", 
+             participant_id = make.names(gsub("*.vhdr$", "", i)))
+  )
+
+}
 
 # electrode locations
 EEG_chl <- electrode_locations(EEG_raw, 
