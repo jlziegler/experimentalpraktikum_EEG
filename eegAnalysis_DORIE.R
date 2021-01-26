@@ -71,17 +71,20 @@ DORlist <-      # overwrite list
 ICAlist <- list()
 
 #### BEGIN LOOP 3 ####
-# ICA -> DAS MIT DEN FILENAMES KLAPPT NOCH NICHT!
+# ICA
 ICAlist <- 
   lapply(DORlist, function(x){
-    filename_ICA <- paste0("ICA_", gsub("*.vhdr$", "", paste(y)))
-    assign(filename_ICA,
-           run_ICA(x))
+           run_ICA(x)
     }
     )
 
-# add suffix "ICA_" to ICA data
+#### END LOOP 3 ####
+
+# add prefix "ICA_" to ICA data
 names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
+
+#### BEGIN LOOP 4 ####
+# ICA components
 
 # ICA EOG
 ICA_comp_eog <- ar_eogcor(decomp = EEG_ICA, 
