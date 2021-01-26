@@ -35,7 +35,9 @@ DORlist <-
                    low_freq = 0.1,
                    high_freq = 30,
                    method = "fir")
-
+# RE-REF
+   x <- eeg_reference(x, 
+                      ref_chans = c("A1", "A2"))
    
 }
 )
