@@ -30,14 +30,14 @@ DORlist <-
    x <- electrode_locations(x,
                            overwrite = T,
                            method = "biosemi64")
+# FILTER
+   x <- eeg_filter(x,
+                   low_freq = 0.1,
+                   high_freq = 30,
+                   method = "fir")
+
+   
 }
-)
-  
-# filter
-EEG_flt <- eeg_filter(EEG_chl,
-                        low_freq = 0.1,
-                        high_freq = 30,
-                        method = "fir"
 )
 
 # re-ref
