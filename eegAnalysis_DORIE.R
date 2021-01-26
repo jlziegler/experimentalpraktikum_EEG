@@ -11,6 +11,7 @@ temp = list.files(path = "./raw", pattern="*.vhdr")
 # create empty list
 DORlist <- list()
 
+#### BEGIN LOOP 1 ####
 # IMPORT DATA
 # & save all data in list
 for (i in temp){
@@ -21,9 +22,13 @@ for (i in temp){
                       file_path = "./raw",   # path to subdirectory "raw"
                       participant_id = make.names(gsub("*.vhdr$", "", i)))  # set particpant ID
   )
+  rm(list = ls(pattern = "vhdr$"))
 }
 
+#### END LOOP 1 ####
 
+#### BEGIN LOOP 2 ####
+# Preprocessing
 DORlist <-      # overwrite list
   lapply(DORlist, function(x){     # apply the following to every df in list
 # ELECTRODE LOCATIONS
@@ -61,31 +66,14 @@ DORlist <-      # overwrite list
 }
 )
 
-# re-ref
-EEG_ref <- eeg_reference(EEG_flt, 
-                           ref_chans = c("A1", "A2")
-)
+#### END LOOP 2 ####
 
-# epoch
-EEG_epo <- epoch_data(EEG_ref,
-                        events = c("S111",
-                                   "S112",
-                                   "S212",
-                                   "S211",
-                                   "S121",
-                                   "S123",
-                                   "S223",
-                                   "S221"),
-                        epoch_labels = c("oeStan",    # o-e (o-Standard)
-                                         "eoStan",    
-                                         "oeDev",
-                                         "eoDev",     # e-o (o-Deviant)
-                                         "ouStan",
-                                         "uoStan",
-                                         "ouDev",
-                                         "uoDev"),
-                        time_lim = c(-.2, .8),
-                        baseline = c(-.2, 0))
+#### BEGIN LOOP 3 ####
+
+DORlist2 <- lapply(DORlist, function(x){ica <- run_ICA(x)})
+### this currently runs ICA, saves them in a new list, names them like the data, 
+### maybe something like this will work:
+# paste0("ICA_", gsub("*.vhdr$", "", names(x))) <- run_ICA(x)
 
 # Run ICA
 EEG_ICA <- run_ICA(EEG_epo)
