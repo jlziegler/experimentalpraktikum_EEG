@@ -1,7 +1,7 @@
 ---
 title: "EEG Analysis Dorie (iMMN)"
 author: "Joshua Ziegler"
-date: "12.01.2021"
+date: "26.01.2021"
 output: html_document
 ---
 
@@ -184,16 +184,12 @@ dor02_cln %>%
   scale_y_reverse()
 
 ```
-- Idee für Skript von Plots: am Anfang Vektor erstellen, in dem die zu vergleichenden Conditions drin sind: ```epoch_comparisons <- c("ouStan", "uoDev")```, dann in Plot call bei Selektion: ```dor02_cln$epochs$epoch_labels==epoch_comparisons[2]``` -> ist das wirklich notwendig?
-- Remove EOG using regession: ```dor02_eog <- ar_eogreg(dor02_epo, heog = c("HEOGli", "HEOGre"), veog = c("VEOGo", "VEOGu"), bipolarize = TRUE)```    
-- Detect high correlation with EOG channels: ```dor02_eog2 <- ar_eogcor(decomp = dor02_ICA, data = dor02_epo, HEOG = c("HEOGli", "HEOGre"), VEOG = c("VEOGo", "VEOGu"))``` -> Was sagt der plot?    
+- Idee für Skript von Plots: am Anfang Vektor erstellen, in dem die zu vergleichenden Conditions drin sind: ```epoch_comparisons <- c("ouStan", "uoDev")```, dann in Plot call bei Selektion: ```dor02_cln$epochs$epoch_labels==epoch_comparisons[2]``` -> ist das wirklich notwendig?    
 - check electrode locations: ```print(dor02_chl$chan_info, n=32)```
 
 
 
 To-do:
-- Artefacts   
-- Eye Movement    
 - Grand Average
 - baseline nur beim plotten? -> wenn mit ggplot geht es evtl nicht anders, als dass schon vorher mit baseline berechnet wird    
 - cluster based permutation test
