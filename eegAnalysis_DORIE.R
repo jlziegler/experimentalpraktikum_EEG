@@ -8,20 +8,22 @@ library(tidyverse)
 # list of vhdr files
 temp = list.files(path = "./raw", pattern="*.vhdr")
 
-##### BEGIN LOOP #####
+# create empty list
+DORlist <- list()
 
-
+# save all data in list
 for (i in temp){
 # IMPORT DATA
-  filename <- paste0(gsub("*.vhdr$", "", i))     
-  assign(filename,
-         import_raw(i, 
-             file_path = "./raw", 
-             participant_id = make.names(gsub("*.vhdr$", "", i)))
+  filename <- paste0(i)     # filename from temp
+  DORlist[[i]] <-           # save the following dfs in a list
+    assign(filename,        # assign respective filename to data
+           import_raw(i,    # import data set
+                      file_path = "./raw",   # path to subdirectory "raw"
+                      participant_id = make.names(gsub("*.vhdr$", "", i)))  # set particpant ID
   )
-
 }
 
+  
 # electrode locations
 EEG_chl <- electrode_locations(EEG_raw, 
                                 overwrite = T,
