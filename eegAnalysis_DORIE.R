@@ -84,7 +84,7 @@ ICAlist <-
 names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
 
 #### BEGIN LOOP 4 ####
-# ICA components
+# ICA components -> NOT WORKING PROPERLY!
 DORlist <-
   mapply(function(x, y){
 # ICA EOG
