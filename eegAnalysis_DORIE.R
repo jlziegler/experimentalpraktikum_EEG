@@ -85,6 +85,30 @@ names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
 
 #### BEGIN LOOP 4 ####
 # ICA components
+DORlist <-
+  mapply(function(x, y){
+# ICA EOG
+    ICA_comp_eog <- ar_eogcor(decomp = y, 
+                              data = x, 
+                              HEOG = c("HEOGli", "HEOGre"), 
+                              VEOG = c("VEOGo", "VEOGu"),
+                              plot = F)
+# ICA MUSCLE
+    ICA_comp_mus <- ar_acf(y,
+                           plot = F)
+# ICA CHANNEL
+    ICA_comp_chn <- ar_chanfoc(y,
+                               plot = F)
+# ICA TRIAL
+    ICA_comp_trl <- ar_trialfoc(y,
+                                plot = F)
+# COMBINE COMPONENTS    
+    ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
+# REMOVE COMPONENTS
+    x <- apply_ica(data = x, 
+                   decomp = y, 
+                   comps = ICA_comp_rem)
+  }, DORlist, ICAlist)
 
 # ICA EOG
 ICA_comp_eog <- ar_eogcor(decomp = EEG_ICA, 
@@ -107,9 +131,6 @@ ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
 
 # Remove Components
 EEG_cln <- apply_ica(data = dor02_epo, decomp = dor02_ICA, comps = ICA_comp_rem)
-
-
-##### END LOOP #####
 
 
 # Combine Data
