@@ -57,10 +57,10 @@ DORlist <-      # overwrite list
                                     "eoStan",    
                                     "oeDev",
                                     "eoDev",     # e-o (o-Deviant)
-                                    "ouStan",
-                                    "uoStan",
-                                    "ouDev",
-                                    "uoDev"),
+                                    "ouStan",    # o-u (o-Standard)
+                                    "uoStan",    # u-o (u-Standard)
+                                    "ouDev",     # o-u (u-Deviant)
+                                    "uoDev"),    # u-o (o-Deviant)
                    time_lim = c(-.2, .8),
                    baseline = c(-.2, 0))
 }
@@ -85,7 +85,7 @@ names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
 
 #### BEGIN LOOP 4 ####
 # ICA components -> NOT WORKING PROPERLY!
-DORlist <-
+test <-
   mapply(function(x, y){
 # ICA EOG
     ICA_comp_eog <- ar_eogcor(decomp = y, 
@@ -105,41 +105,53 @@ DORlist <-
 # COMBINE COMPONENTS    
     ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
 # REMOVE COMPONENTS
-    x <- apply_ica(data = x, 
+    x <- apply_ica(data = x,    # as.list?
                    decomp = y, 
                    comps = ICA_comp_rem)
   }, DORlist, ICAlist)
-
-# ICA EOG
-ICA_comp_eog <- ar_eogcor(decomp = EEG_ICA, 
-                          data = EEG_epo, 
-                          HEOG = c("HEOGli", "HEOGre"), 
-                          VEOG = c("VEOGo", "VEOGu")
-)
-
-# ICA Muscle
-ICA_comp_mus <- ar_acf(EEG_ICA)
-
-# ICA Channel
-ICA_comp_chn <- ar_chanfoc(EEG_ICA)
-
-# ICA Trial
-ICA_comp_trl <- ar_trialfoc(EEG_ICA)
-
-# Combine Components
-ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
-
-# Remove Components
-EEG_cln <- apply_ica(data = dor02_epo, decomp = dor02_ICA, comps = ICA_comp_rem)
 
 
 # Combine Data
 
 # Plot Data
 
+# Stats: RM-ANOVA over differences (diff oStan-oDev vs diff uStan-uDev)
+
+##### mapply test
+v1 <- c("a", "b")
+v2 <- c(4, 3)
+df1 <- data.frame(v1, v2)
+v3 <- c(5, 6, 7, 8)
+v4 <- c(8, 7, 6, 5)
 
 
+df1 <- as.data.frame(v1, v2)
 
 
+#### macht das selbe wir mapply...
+test <-
+  c(outer(DORlist, ICAlist, Vectorize(function(x, y){
+    # ICA EOG
+    ICA_comp_eog <- ar_eogcor(decomp = y, 
+                              data = x, 
+                              HEOG = c("HEOGli", "HEOGre"), 
+                              VEOG = c("VEOGo", "VEOGu"),
+                              plot = F)
+    # ICA MUSCLE
+    ICA_comp_mus <- ar_acf(y,
+                           plot = F)
+    # ICA CHANNEL
+    ICA_comp_chn <- ar_chanfoc(y,
+                               plot = F)
+    # ICA TRIAL
+    ICA_comp_trl <- ar_trialfoc(y,
+                                plot = F)
+    # COMBINE COMPONENTS    
+    ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
+    # REMOVE COMPONENTS
+    x <- apply_ica(data = x, 
+                   decomp = y, 
+                   comps = ICA_comp_rem)
+  })))
 
 
