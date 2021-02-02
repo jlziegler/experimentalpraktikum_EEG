@@ -104,10 +104,14 @@ test <-
                                 plot = F)
 # COMBINE COMPONENTS    
     ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
+# GET LIST NAMES
+    DORlist.names <- names(x)
 # REMOVE COMPONENTS
-    x <- apply_ica(data = x,    # as.list?
+    x <- apply_ica(data = x,    
                    decomp = y, 
                    comps = ICA_comp_rem)
+# RENAME LISTS AND PUT INTO LIST
+    
   }, DORlist, ICAlist)
 
 
@@ -127,31 +131,8 @@ v4 <- c(8, 7, 6, 5)
 
 df1 <- as.data.frame(v1, v2)
 
-
-#### macht das selbe wir mapply...
-test <-
-  c(outer(DORlist, ICAlist, Vectorize(function(x, y){
-    # ICA EOG
-    ICA_comp_eog <- ar_eogcor(decomp = y, 
-                              data = x, 
-                              HEOG = c("HEOGli", "HEOGre"), 
-                              VEOG = c("VEOGo", "VEOGu"),
-                              plot = F)
-    # ICA MUSCLE
-    ICA_comp_mus <- ar_acf(y,
-                           plot = F)
-    # ICA CHANNEL
-    ICA_comp_chn <- ar_chanfoc(y,
-                               plot = F)
-    # ICA TRIAL
-    ICA_comp_trl <- ar_trialfoc(y,
-                                plot = F)
-    # COMBINE COMPONENTS    
-    ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
-    # REMOVE COMPONENTS
-    x <- apply_ica(data = x, 
-                   decomp = y, 
-                   comps = ICA_comp_rem)
-  })))
-
+mapply(function(x, y){
+  DORlist.names <- names(x)
+  print(DORlist.names)
+}, DORlist, ICAlist)
 
