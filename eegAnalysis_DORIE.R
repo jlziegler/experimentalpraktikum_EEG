@@ -45,19 +45,11 @@ DORlist <-      # overwrite list
                       ref_chans = c("A1", "A2"))
 # EPOCH
    x <- epoch_data(x, 
-                   events = c("S111",
-                              "S112",
-                              "S212",
-                              "S211",
-                              "S121",
+                   events = c("S121",
                               "S123",
                               "S223",
                               "S221"), 
-                   epoch_labels = c("oeStan",    # o-e (o-Standard)
-                                    "eoStan",    
-                                    "oeDev",
-                                    "eoDev",     # e-o (o-Deviant)
-                                    "ouStan",    # o-u (o-Standard)
+                   epoch_labels = c("ouStan",    # o-u (o-Standard)
                                     "uoStan",    # u-o (u-Standard)
                                     "ouDev",     # o-u (u-Deviant)
                                     "uoDev"),    # u-o (o-Deviant)
@@ -114,6 +106,10 @@ DORlist.final <-
 rm(ICAlist)
 
 # Combine Data
+DORgravg <- 
+  map(DORlist.final, function(x){
+    as.data.frame(x, long = T)
+  })
 
 # Plot Data
 
