@@ -159,11 +159,36 @@ test2 <-
   group_by(time, epoch_labels, electrode) %>%
   summarise_at("amplitude", mean)
 
-
 # diff Dev-Stan
+# long to wide
+test3 <-
+  test2 %>%
+  pivot_wider(names_from = epoch_labels,
+              values_from = amplitude)
+  
+# differences
+test4 <-
+  test3 %>%
+  mutate(o_diff = uoDev - ouStan,
+         u_diff = ouDev - uoStan,
+         .keep = "unused")
 
+# wide to long
+test5 <-
+  test4 %>%
+  pivot_longer(cols = c(o_diff, u_diff), names_to = "epoch_diff", values_to = "amplitude_diff")
 
-
+# Plot differences
+test5 %>%
+  ggplot(aes(x = time, y = amplitude_diff)) +
+  stat_summary(fun = mean, 
+               geom = "line", 
+               aes(colour = epoch_diff)) + 
+  facet_wrap(~electrode) + # wenn mehrere elektroden
+  scale_y_reverse() + 
+  theme_light() +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0)
 
 
 
