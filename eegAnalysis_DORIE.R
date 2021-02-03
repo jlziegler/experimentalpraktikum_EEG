@@ -113,8 +113,8 @@ DORlist.final <-
 # REMOVE ICAlist
 rm(ICAlist)
 
-# Combine Data
-DORgravg_FCz <- 
+# CONVERT TO DATA FRAME
+DOR_df_FCz <- 
   map(DORlist.final, function(x){
     x %>%
       filter(epoch_labels %in% c("uoDev", "ouStan", "uoStan", "ouDev")) %>%
@@ -122,7 +122,34 @@ DORgravg_FCz <-
       filter(electrode == "FCz")
   })
 
-# Plot Data
+# COMBINE DATASETS
+DOR_gravg_FCz <- bind_rows(DOR_df_FCz)
+
+# Plot o Data
+DOR_gravg_FCz %>%
+  filter(epoch_labels %in% c("uoDev", "ouStan")) %>%
+  ggplot(aes(x = time, y = amplitude)) +
+    stat_summary(fun = mean, 
+               geom = "line", 
+               aes(colour = epoch_labels)) + 
+    facet_wrap(~electrode) + # wenn mehrere elektroden
+    scale_y_reverse() + 
+    theme_light() +
+    geom_hline(yintercept = 0) +
+    geom_vline(xintercept = 0)
+
+# Plot u Data
+DOR_gravg_FCz %>%
+  filter(epoch_labels %in% c("ouDev", "uoStan")) %>%
+  ggplot(aes(x = time, y = amplitude)) +
+  stat_summary(fun = mean, 
+               geom = "line", 
+               aes(colour = epoch_labels)) + 
+  facet_wrap(~electrode) + # wenn mehrere elektroden
+  scale_y_reverse() + 
+  theme_light() +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0)
 
 # Stats: RM-ANOVA over differences (diff oStan-oDev vs diff uStan-uDev)
 
