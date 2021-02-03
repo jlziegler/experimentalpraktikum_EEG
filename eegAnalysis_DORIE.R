@@ -153,3 +153,23 @@ DOR_gravg_FCz %>%
 
 # Stats: RM-ANOVA over differences (diff oStan-oDev vs diff uStan-uDev)
 
+# mean for every time by epoch_label
+test2 <-
+  DOR_gravg_FCz %>%
+  group_by(time, epoch_labels, electrode) %>%
+  summarise_at("amplitude", mean)
+
+
+# diff Dev-Stan
+
+
+
+
+
+
+
+
+
+
+
+
