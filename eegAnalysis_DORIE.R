@@ -84,55 +84,38 @@ ICAlist <-
 names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
 
 #### BEGIN LOOP 4 ####
-# ICA components -> NOT WORKING PROPERLY!
-test <-
-  mapply(function(x, y){
-# ICA EOG
+# ICA components (using map2() from purrr package (tidyverse))
+DORlist.final <-
+  map2(DORlist, ICAlist, function(x, y){
+    # ICA EOG
     ICA_comp_eog <- ar_eogcor(decomp = y, 
                               data = x, 
                               HEOG = c("HEOGli", "HEOGre"), 
                               VEOG = c("VEOGo", "VEOGu"),
                               plot = F)
-# ICA MUSCLE
+    # ICA MUSCLE
     ICA_comp_mus <- ar_acf(y,
                            plot = F)
-# ICA CHANNEL
+    # ICA CHANNEL
     ICA_comp_chn <- ar_chanfoc(y,
                                plot = F)
-# ICA TRIAL
+    # ICA TRIAL
     ICA_comp_trl <- ar_trialfoc(y,
                                 plot = F)
-# COMBINE COMPONENTS    
+    # COMBINE COMPONENTS    
     ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
-# GET LIST NAMES
-    DORlist.names <- names(x)
-# REMOVE COMPONENTS
+    # REMOVE COMPONENTS
     x <- apply_ica(data = x,    
                    decomp = y, 
                    comps = ICA_comp_rem)
-# RENAME LISTS AND PUT INTO LIST
-    
-  }, DORlist, ICAlist)
+  })
 
+# REMOVE ICAlist
+rm(ICAlist)
 
 # Combine Data
 
 # Plot Data
 
 # Stats: RM-ANOVA over differences (diff oStan-oDev vs diff uStan-uDev)
-
-##### mapply test
-v1 <- c("a", "b")
-v2 <- c(4, 3)
-df1 <- data.frame(v1, v2)
-v3 <- c(5, 6, 7, 8)
-v4 <- c(8, 7, 6, 5)
-
-
-df1 <- as.data.frame(v1, v2)
-
-mapply(function(x, y){
-  DORlist.names <- names(x)
-  print(DORlist.names)
-}, DORlist, ICAlist)
 
