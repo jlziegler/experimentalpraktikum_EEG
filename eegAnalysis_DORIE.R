@@ -138,6 +138,8 @@ DOR_gravg_FCz %>%
     geom_hline(yintercept = 0) +
     geom_vline(xintercept = 0)
 
+#ggsave
+
 # Plot u Data
 DOR_gravg_FCz %>%
   filter(epoch_labels %in% c("ouDev", "uoStan")) %>%
@@ -151,13 +153,15 @@ DOR_gravg_FCz %>%
   geom_hline(yintercept = 0) +
   geom_vline(xintercept = 0)
 
-# Stats: RM-ANOVA over differences (diff oStan-oDev vs diff uStan-uDev)
+#ggsave
 
+# PLOT DIFFERENCES
 # mean for every time by epoch_label
 test2 <-
   DOR_gravg_FCz %>%
-  group_by(time, epoch_labels, electrode) %>%
-  summarise_at("amplitude", mean)
+  group_by(time, epoch_labels, electrode, participant_id) %>%
+  summarise_at("amplitude", mean) %>%
+  ungroup()
 
 # diff Dev-Stan
 # long to wide
@@ -176,7 +180,9 @@ test4 <-
 # wide to long
 test5 <-
   test4 %>%
-  pivot_longer(cols = c(o_diff, u_diff), names_to = "epoch_diff", values_to = "amplitude_diff")
+  pivot_longer(cols = c(o_diff, u_diff), 
+               names_to = "epoch_diff", 
+               values_to = "amplitude_diff")
 
 # Plot differences
 test5 %>%
@@ -190,9 +196,20 @@ test5 %>%
   geom_hline(yintercept = 0) +
   geom_vline(xintercept = 0)
 
-# average over 120-200ms -> ANOVA (need to include participants)
+# AVERAGE DATA OVER 120-200 ms
+test6 <-
+  test5 %>%
+    filter(time >= 0.12,  # 120 ms
+          time <= 0.2)    # 200 ms
 
+# mean by participant and epoch
+test7 <-
+  test6 %>% 
+  group_by(electrode, participant_id, epoch_diff) %>%  # keep electrode, participant & epoch
+  summarise_at("amplitude_diff", mean) %>%             # mean amplitude
+  ungroup()
 
+# REPEATED MEASURES ANOVA ON DIFFERENCES
 
 
 
