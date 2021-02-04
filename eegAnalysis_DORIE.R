@@ -190,7 +190,7 @@ test5 %>%
   geom_hline(yintercept = 0) +
   geom_vline(xintercept = 0)
 
-
+# average over 120-200ms -> ANOVA (need to include participants)
 
 
 
