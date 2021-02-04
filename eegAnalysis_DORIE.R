@@ -218,6 +218,11 @@ diff.avg.crit <-
   ungroup()
 
 # REPEATED MEASURES ANOVA ON DIFFERENCES
+# summary(aov(amplitude_diff ~ epoch_diff + Error(participant_id), data = diff.avg.crit))
+
+# pairwise t test
+# t.test(amplitude_diff ~ epoch_diff, data = diff.avg.crit, paired = T)
+
 
 
 
