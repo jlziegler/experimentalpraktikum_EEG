@@ -126,6 +126,7 @@ DOR_df_FCz <-
 DOR_gravg_FCz <- bind_rows(DOR_df_FCz)
 
 # Plot o Data
+o_diff_plot <-
 DOR_gravg_FCz %>%
   filter(epoch_labels %in% c("uoDev", "ouStan")) %>%
   ggplot(aes(x = time, y = amplitude)) +
@@ -138,9 +139,11 @@ DOR_gravg_FCz %>%
     geom_hline(yintercept = 0) +
     geom_vline(xintercept = 0)
 
-#ggsave
+# SAVE PLOT
+#ggsave("o_diff_plot.png", plot = o_diff_plot)
 
 # Plot u Data
+u_diff_plot <- 
 DOR_gravg_FCz %>%
   filter(epoch_labels %in% c("ouDev", "uoStan")) %>%
   ggplot(aes(x = time, y = amplitude)) +
@@ -153,11 +156,12 @@ DOR_gravg_FCz %>%
   geom_hline(yintercept = 0) +
   geom_vline(xintercept = 0)
 
-#ggsave
+# SAVE PLOT
+#ggsave("u_diff_plot.png", plot = u_diff_plot)
 
 # PLOT DIFFERENCES
 # mean for every time by epoch_label
-test2 <-
+diff.avg <-
   DOR_gravg_FCz %>%
   group_by(time, epoch_labels, electrode, participant_id) %>%
   summarise_at("amplitude", mean) %>%
@@ -165,27 +169,28 @@ test2 <-
 
 # diff Dev-Stan
 # long to wide
-test3 <-
-  test2 %>%
+diff.avg <-
+  diff.avg %>%
   pivot_wider(names_from = epoch_labels,
               values_from = amplitude)
   
 # differences
-test4 <-
-  test3 %>%
+diff.avg <-
+  diff.avg %>%
   mutate(o_diff = uoDev - ouStan,
          u_diff = ouDev - uoStan,
          .keep = "unused")
 
 # wide to long
-test5 <-
-  test4 %>%
+diff.avg <-
+  diff.avg %>%
   pivot_longer(cols = c(o_diff, u_diff), 
                names_to = "epoch_diff", 
                values_to = "amplitude_diff")
 
 # Plot differences
-test5 %>%
+immn.plot <-
+diff.avg %>%
   ggplot(aes(x = time, y = amplitude_diff)) +
   stat_summary(fun = mean, 
                geom = "line", 
@@ -196,15 +201,18 @@ test5 %>%
   geom_hline(yintercept = 0) +
   geom_vline(xintercept = 0)
 
+# ggsave
+#ggsave("immn_plot.png", plot = immn.plot)
+
 # AVERAGE DATA OVER 120-200 ms
-test6 <-
-  test5 %>%
+diff.avg.crit <-
+  diff.avg %>%
     filter(time >= 0.12,  # 120 ms
           time <= 0.2)    # 200 ms
 
 # mean by participant and epoch
-test7 <-
-  test6 %>% 
+diff.avg.crit <-
+  diff.avg.crit %>% 
   group_by(electrode, participant_id, epoch_diff) %>%  # keep electrode, participant & epoch
   summarise_at("amplitude_diff", mean) %>%             # mean amplitude
   ungroup()
