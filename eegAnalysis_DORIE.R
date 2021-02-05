@@ -85,25 +85,32 @@ names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
 
 #### BEGIN LOOP 4 ####
 # ICA components (using map2() from purrr package (tidyverse))
-DORlist.final <-
+DORlist <-
   map2(DORlist, ICAlist, function(x, y){
+    # print participant id
+    print(x$epochs$participant_id[1])
     # ICA EOG
+    print("ICA EOG")
     ICA_comp_eog <- ar_eogcor(decomp = y, 
                               data = x, 
                               HEOG = c("HEOGli", "HEOGre"), 
                               VEOG = c("VEOGo", "VEOGu"),
                               plot = F)
     # ICA MUSCLE
+    print("ICA Muscle")
     ICA_comp_mus <- ar_acf(y,
                            plot = F)
     # ICA CHANNEL
+    print("ICA Channel")
     ICA_comp_chn <- ar_chanfoc(y,
                                plot = F)
     # ICA TRIAL
+    print("ICA Trial")
     ICA_comp_trl <- ar_trialfoc(y,
                                 plot = F)
     # COMBINE COMPONENTS    
     ICA_comp_rem <- c(ICA_comp_eog, ICA_comp_mus, ICA_comp_chn, ICA_comp_trl)
+    print(ICA_comp_rem)
     # REMOVE COMPONENTS
     x <- apply_ica(data = x,    
                    decomp = y, 
@@ -115,7 +122,7 @@ rm(ICAlist)
 
 # CONVERT TO DATA FRAME
 DOR_df_FCz <- 
-  map(DORlist.final, function(x){
+  map(DORlist, function(x){
     x %>%
       filter(epoch_labels %in% c("uoDev", "ouStan", "uoStan", "ouDev")) %>%
       as.data.frame(long = T) %>%
@@ -140,7 +147,7 @@ DOR_gravg_FCz %>%
     geom_vline(xintercept = 0)
 
 # SAVE PLOT
-#ggsave("o_diff_plot.png", plot = o_diff_plot)
+ggsave("o_diff_plot.png", plot = o_diff_plot)
 
 # Plot u Data
 u_diff_plot <- 
@@ -157,7 +164,7 @@ DOR_gravg_FCz %>%
   geom_vline(xintercept = 0)
 
 # SAVE PLOT
-#ggsave("u_diff_plot.png", plot = u_diff_plot)
+ggsave("u_diff_plot.png", plot = u_diff_plot)
 
 # PLOT DIFFERENCES
 # mean for every time by epoch_label
@@ -202,7 +209,7 @@ diff.avg %>%
   geom_vline(xintercept = 0)
 
 # ggsave
-#ggsave("immn_plot.png", plot = immn.plot)
+ggsave("immn_plot.png", plot = immn.plot)
 
 # AVERAGE DATA OVER 120-200 ms
 diff.avg.crit <-
@@ -218,7 +225,8 @@ diff.avg.crit <-
   ungroup()
 
 # REPEATED MEASURES ANOVA ON DIFFERENCES
-summary(aov(amplitude_diff ~ epoch_diff + Error(participant_id), data = diff.avg.crit))
+print(summary(aov(amplitude_diff ~ epoch_diff + Error(participant_id), 
+            data = diff.avg.crit)))
 
 
 
