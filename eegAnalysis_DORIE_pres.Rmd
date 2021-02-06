@@ -1,0 +1,48 @@
+---
+title: "Experimentalpraktikum"
+subtitle: "EEG Analyse in R"
+author: "Joshua Ziegler"
+date: "10.02.2021"
+output: 
+  revealjs::revealjs_presentation:
+    self_contained: false
+    reveal_plugins: ["menu"]
+    transition: slide 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(eegUtils) 
+library(tidyverse)
+```
+
+## Laden der Rohdaten
+
+```{r, echo=T, results='hide', message=F}
+# Liste der vhdr-Dateien im "raw"-Ordner
+temp <- list.files(path = "./raw", pattern="*.vhdr")
+
+# Leere Liste erstellen
+DORlist <- list()
+
+# Daten importieren
+for (i in temp){
+  filename <- paste0(i)     # filename from temp
+  DORlist[[i]] <-           # save the following elements in a list
+    assign(filename,        # assign respective filename to data
+           import_raw(i,    # import data set
+                      file_path = "./raw",   # path to subdirectory "raw"
+                      participant_id = make.names(gsub("*.vhdr$", "", i)))  # set particpant ID
+  )
+  rm(list = ls(pattern = "vhdr$"))  # remove files that are not in list
+}
+```
+
+## Überblick über die Daten
+
+## Preprocessing
+
+```{r}
+
+```
+

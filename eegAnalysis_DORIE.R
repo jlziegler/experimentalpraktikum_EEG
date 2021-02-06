@@ -6,7 +6,7 @@ library(eegUtils)
 library(tidyverse)
 
 # list of vhdr files
-temp = list.files(path = "./raw", pattern="*.vhdr")
+temp <- list.files(path = "./raw", pattern="*.vhdr")
 
 # create empty list
 DORlist <- list()
@@ -22,7 +22,7 @@ for (i in temp){
                       file_path = "./raw",   # path to subdirectory "raw"
                       participant_id = make.names(gsub("*.vhdr$", "", i)))  # set particpant ID
   )
-  rm(list = ls(pattern = "vhdr$"))
+  rm(list = ls(pattern = "vhdr$"))  # remove files that are not in list
 }
 
 #### END LOOP 1 ####
