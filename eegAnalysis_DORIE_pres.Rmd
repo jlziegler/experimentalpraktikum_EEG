@@ -50,8 +50,15 @@ for (i in temp){
 }
 ```
 
-## Überblick über die Daten
-browse_data (screenshot) & Listenorganisation (screenshot)
+## Überblick über die Rohdaten (1)
+<small>eegUtils-Funktion: ```browse_data```</small>
+![Datenbrowser (Shiny-App)](imgs/browse_data.png)
+
+## Überblick über die Rohaten (2)
+![Datenorganisation in Listen](imgs/list_org.png)
+
+## Überblick über die Rohaten (3)
+![Datenorganisation in Listen (2)](imgs/list_org_signals.png)
 
 ## Preprocessing
 <small>eegUtils-Funktionen: ```electrode_locations, eeg_filter, eeg_reference, epoch_data```</small>
@@ -118,9 +125,12 @@ names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
 
 ## Überblick ICA
 <small>eegUtils-Funktion: ```view_ica```</small>
-(sceenshot)
+![ICA Überblick](imgs/ICA_topo.png)
 
-## ICA Komponenten
+## Überblick nach ICA Komponenten
+![ICA Überblick nach Komponenten](imgs/ICA_comp.png)
+
+## ICA Komponenten (Artifact Rejection)
 <small>eegUtils-Funktionen: ```ar_eogcor, ar_acf, ar_chanfoc, ar_trialfoc, apply_ica```</small>
 ```{r, echo=T, eval=FALSE}
 # ICA components (using map2() from purrr package (tidyverse))
@@ -162,7 +172,11 @@ DORlist <-
 rm(ICAlist)
 ```
 
-## Datenanalyse
+## Output der Artifact Rejection:
+![AR Output andhand eines Datensatzes](imgs/ICA_out.png)
+
+# Statisik
+## Zusammenfassen der Daten (Grand Average)
 ```{r, echo=T, eval=FALSE}
 # CONVERT TO DATA FRAME
 DOR_df_FCz <- 
@@ -174,9 +188,9 @@ DOR_df_FCz <-
   })
 # COMBINE DATASETS
 DOR_gravg_FCz <- bind_rows(DOR_df_FCz)
+# Inhalt:
+head(DOR_gravg_FCz)
 ```
-
-head?
 
 ## Plots
 ## ggplot Code
@@ -293,5 +307,10 @@ print(summary(aov(amplitude_diff ~ epoch_diff + Error(participant_id),
 # Diskussion
 
 # Fazit
-- Pros:
-- Cons:
+* Pros:
+  + test
+* Cons:
+  + test
+
+# Quellen
+
