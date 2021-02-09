@@ -95,6 +95,12 @@ DORlist <-      # overwrite list
 )
 ```
 
+## Beispielplot nach Epochierung
+<small>eegUtils-Funktion: ```plot_timecourse```</small>
+```{r, echo=T, eval=FALSE}
+plot_timecourse(DORlist$DOR02.vhdr, "FCz", colour = "event_type")
+```
+
 ## ICA
 <small>eegUtils-Funktion: ```run_ICA```</small>
 ```{r, echo=T, eval=FALSE}
@@ -103,9 +109,11 @@ ICAlist <- list()
 # ICA
 ICAlist <- 
   lapply(DORlist, function(x){
-           run_ICA(x)
+           run_ICA(x)   # default: SOBI ICA
     }
     )
+# add prefix "ICA_" to ICA data
+names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
 ```
 
 ## Überblick ICA
@@ -210,7 +218,6 @@ DOR_gravg_FCz %>%
 
 print(u_diff_plot)
 ```
-
 
 ## iMMN
 ```{r, echo=T, eval=FALSE}
