@@ -144,7 +144,8 @@ DOR_gravg_FCz %>%
     scale_y_reverse() + 
     theme_light() +
     geom_hline(yintercept = 0) +
-    geom_vline(xintercept = 0)
+    geom_vline(xintercept = 0) + 
+    scale_x_continuous(breaks = seq(-.2, .8, .1))
 
 # SAVE PLOT
 ggsave("o_diff_plot.png", plot = o_diff_plot)
@@ -161,7 +162,8 @@ DOR_gravg_FCz %>%
   scale_y_reverse() + 
   theme_light() +
   geom_hline(yintercept = 0) +
-  geom_vline(xintercept = 0)
+  geom_vline(xintercept = 0) +
+  scale_x_continuous(breaks = seq(-.2, .8, .1))
 
 # SAVE PLOT
 ggsave("u_diff_plot.png", plot = u_diff_plot)
@@ -203,10 +205,10 @@ diff.avg %>%
                geom = "line", 
                aes(colour = epoch_diff)) + 
   facet_wrap(~electrode) + # wenn mehrere elektroden
-  scale_y_reverse() + 
   theme_light() +
   geom_hline(yintercept = 0) +
-  geom_vline(xintercept = 0)
+  geom_vline(xintercept = 0) + 
+  scale_x_continuous(breaks = seq(-.2, .8, .1))
 
 # ggsave
 ggsave("immn_plot.png", plot = immn.plot)
