@@ -26,10 +26,56 @@ library(tidyverse)
 ```
 
 # Was ist R? 
+*R is a free software environment for statistical computing and graphics. It compiles and runs on a wide variety of UNIX platforms, Windows and MacOS.*     
+(Quelle: https://www.r-project.org)
+
 # Warum R?
+![RStudio Overview](imgs/rstudio_overview.png)
+
 # eegUtils
+- R Paket von Matt Craddock:    
+<small><i>eegUtils is a **package for the processing, manipulation, and plotting of EEG data**. It includes functions for **importing data from a variety of file formats** (including Biosemi, Brain Vision Analyzer, and EEGLAB), many of the **typical steps in pre-preprocessing** (filtering, referencing, artefact rejection), more **advanced processing techniques (time-frequency analysis, ICA)**, and **several types of plot** that are common in the field (ERP plots, time-frequency plots, topographical scalp maps). Although it uses custom object classes, it is designed such that these are **always translatable to standard R data.frames**, and thus can be used with any of the myriad packages and methods that support standard R formats.</i>   
+(Quelle: https://craddm.github.io/eegUtils/index.html)</small>  
+ 
+- Github: https://github.com/craddm/eegUtils
+- Hier verwendete Version: eegUtils_0.6.0 (Stand 09.02.2021)
+- R version 4.0.2 (2020-06-22), RStudio Version 1.3.1073
+
 # Studie
-# Auswertung
+![Dorie](imgs/dorie.jpg)
+
+## Natural Referent Vowel Modell (NRV, Polka & Bohn 2011): 
+- Vokale werden anhand ihrer phonetischen Merkmale unterschieden
+- Im Vokalraum peripher liegende Vokale sind aufgrund von Formantkonvergenz salienter
+  + Diskrimination von zentral zu peripher einfacher    
+![(Polka & Bohn 2011)](imgs/pb11_nrv.png){width=45%}
+
+## Material
+- Deutsche Langvokale /o:/ & /u:/ (jeweils 5 Tokens)
+- 10 Versuchspersonen (rechtshändig, monolingual Deutsch, (fast) keine Dialektkompetenz, keine Hörbeeinträchtigung, keine neurologische oder psychiatrische Vorerkrankung)   
+```{r, message=F, out.width="50%"}
+source("formant_map.R")
+```
+
+## Methode
+- Passives Oddball-Design (in beide Richtungen)
+  + z.B.: o-o-o-o-o-**u**-o-o-o...
+- EEG: 
+  + 32 Elektroden 
+  + 500 Hz Samplingrate
+  + Random ISI (600-1100 ms)
+- Berechnung der identity Mismatch Negativity (iMMN):
+  + Differenz der EKP-Signale des Standards und Deviants der selben Stimuli
+  + an der FCz bei 120-200 ms
+  
+## Hypothesen:
+- Intra-Stimuli: 
+  + stärkerer Effekt bei /u:/-Dev als bei /u:/-Stan 
+  + schwächerer Effekt bei /o:/
+- Inter-Stimuli: 
+  + signifikanter Unterschied = direktionale Asymmetrie
+
+# Auswertung in R mit *eegUtils*
 ## Laden der Rohdaten
 <small>eegUtils-Funktion: ```import_raw```</small>
 ```{r, echo=T, results='hide', message=F, eval=FALSE}
@@ -102,12 +148,6 @@ DORlist <-      # overwrite list
 )
 ```
 
-## Beispielplot nach Epochierung
-<small>eegUtils-Funktion: ```plot_timecourse```</small>
-```{r, echo=T, eval=FALSE}
-plot_timecourse(DORlist$DOR02.vhdr, "FCz", colour = "event_type")
-```
-
 ## ICA
 <small>eegUtils-Funktion: ```run_ICA```</small>
 ```{r, echo=T, eval=FALSE}
@@ -130,7 +170,7 @@ names(ICAlist) <- paste("ICA_", names(ICAlist), sep = "")
 ## Überblick nach ICA Komponenten
 ![ICA Überblick nach Komponenten](imgs/ICA_comp.png)
 
-## ICA Komponenten (Artifact Rejection)
+## Artifact Rejection
 <small>eegUtils-Funktionen: ```ar_eogcor, ar_acf, ar_chanfoc, ar_trialfoc, apply_ica```</small>
 ```{r, echo=T, eval=FALSE}
 # ICA components (using map2() from purrr package (tidyverse))
@@ -175,8 +215,11 @@ rm(ICAlist)
 ## Output der Artifact Rejection:
 ![AR Output andhand eines Datensatzes](imgs/ICA_out.png)
 
-# Statisik
-## Zusammenfassen der Daten (Grand Average)
+## Correlation Coefficient Plot
+![Correlation Coefficient Plot](imgs/cc_plot.png)
+
+# iMMN
+## Zusammenfassen der Daten
 ```{r, echo=T, eval=FALSE}
 # CONVERT TO DATA FRAME
 DOR_df_FCz <- 
@@ -188,12 +231,13 @@ DOR_df_FCz <-
   })
 # COMBINE DATASETS
 DOR_gravg_FCz <- bind_rows(DOR_df_FCz)
-# Inhalt:
+# Tabellenkopf:
 head(DOR_gravg_FCz)
 ```
 
-## Plots
-## ggplot Code
+![Tabellenkopf](imgs/head_GA.png)
+
+## Plot Code
 ```{r, echo=T, eval=FALSE}
 # Plot o Data
 o_diff_plot <-
@@ -212,30 +256,12 @@ DOR_gravg_FCz %>%
 ```
 
 ## /o:/
-```{r, eval=FALSE}
-print(o_diff_plot)
-```
+![o-Plot](imgs/o_diff_plot.png){width=75%}
 
 ## /u:/
-```{r, eval=FALSE}
-u_diff_plot <- 
-DOR_gravg_FCz %>%
-  filter(epoch_labels %in% c("ouDev", "uoStan")) %>%
-  ggplot(aes(x = time, y = amplitude)) +
-  stat_summary(fun = mean, 
-               geom = "line", 
-               aes(colour = epoch_labels)) + 
-  facet_wrap(~electrode) + # wenn mehrere elektroden
-  scale_y_reverse() + 
-  theme_light() +
-  geom_hline(yintercept = 0) +
-  geom_vline(xintercept = 0) +
-  scale_x_continuous(breaks = seq(-.2, .8, .1))
+![u-Plot](imgs/u_diff_plot.png){width=75%}
 
-print(u_diff_plot)
-```
-
-## iMMN
+## Vorbereitung für Inferenzstatistik
 ```{r, echo=T, eval=FALSE}
 # Mittelwert für jeden Zeitpunkt, aufgeteilt nach Bedingung
 diff.avg <-
@@ -264,28 +290,6 @@ diff.avg <-
   pivot_longer(cols = c(o_diff, u_diff), 
                names_to = "epoch_diff", 
                values_to = "amplitude_diff")
-```
-
-## Plot
-```{r, echo=T, eval=FALSE}
-# Plot differences
-immn.plot <-
-diff.avg %>%
-  ggplot(aes(x = time, y = amplitude_diff)) +
-  stat_summary(fun = mean, 
-               geom = "line", 
-               aes(colour = epoch_diff)) + 
-  facet_wrap(~electrode) + # wenn mehrere elektroden
-  theme_light() +
-  geom_hline(yintercept = 0) +
-  geom_vline(xintercept = 0) +
-  scale_x_continuous(breaks = seq(-.2, .8, .1))
-
-print(immn.plot)
-```
-
-## Inferenzstatistik
-```{r, echo=T, eval=FALSE}
 # AVERAGE DATA OVER 120-200 ms
 diff.avg.crit <-
   diff.avg %>%
@@ -298,19 +302,43 @@ diff.avg.crit <-
   group_by(electrode, participant_id, epoch_diff) %>%  # keep electrode, participant & epoch
   summarise_at("amplitude_diff", mean) %>%             # mean amplitude
   ungroup()
+```
 
+## Repeated Measures ANOVA
+```{r, echo=T, eval=FALSE}
 # REPEATED MEASURES ANOVA ON DIFFERENCES
 print(summary(aov(amplitude_diff ~ epoch_diff + Error(participant_id), 
             data = diff.avg.crit)))
 ```
 
-# Diskussion
+![ANOVA](imgs/rm_anova.png)
 
-# Fazit
-* Pros:
-  + test
-* Cons:
-  + test
+# Diskussion
+- Intra-Stimuli:
+  + Symmetrie bei /u:/
+  + Asymmetrie bei /o:/ widerspricht NRV
+- Inter-Stimuli: 
+  + kein signifikanter Unterschied, also keine direktionale Asymmetrie
+- Präliminären Daten deuten daraufhin, dass die Annahmen des NRV nicht zutreffen
+
+# Fazit zu eegUtils
+- Pros:
+  + Vielzahl an Funktionen
+  + Einfache Integration von *tidyverse* und *baseR*
+  + Ständig in Entwicklung, Kontakt mit Entwickler über GitHub möglich
+- Cons:
+  + Dokumentation und Anleitung sehr knapp
+  + Nicht so intuitiv wie das GUI von EEGLAB & ERPLAB
+  + Nicht alle *Channel Locations* erkannt
+  + Grand Average nur über Umwege möglich
+  + (Manuelle Korrekturen nicht vorgesehen)
 
 # Quellen
-
+<small>
+- Chaumon, M., Bishop, D. V. M., & Busch, N. A. (2015). A practical guide to the selection of independent components of the electroencephalogram for artifact correction. *Journal of Neuroscience Methods*, 250, 47–63. https://doi.org/10.1016/j.jneumeth.2015.02.025   
+- Craddock, M. (2021). *eegUtils: Utilities for Electroencephalographic (EEG) Analysis*. https://github.com/craddm/eegUtils, https://craddm.github.io/eegUtils.    
+- Polka, L., & Bohn, O.-S. (2011). Natural Referent Vowel (NRV) framework: An emerging view of early phonetic development. *Journal of Phonetics*, 39(4), 467–478. https://doi.org/10.1016/j.wocn.2010.08.007   
+- Pulvermüller, F., & Shtyrov, Y. (2006). Language outside the focus of attention: The mismatch negativity as a tool for studying higher cognitive processes. *Progress in Neurobiology*, 79(1), 49–71. https://doi.org/10.1016/j.pneurobio.2006.04.004   
+- R Core Team (2020). R: A language and environment for statistical computing. *R Foundation for Statistical Computing*, Vienna, Austria. URL https://www.R-project.org/    
+- Wickham et al. (2019). Welcome to the tidyverse. *Journal of Open Source Software*, 4(43), 1686, https://doi.org/10.21105/joss.01686   
+</small>

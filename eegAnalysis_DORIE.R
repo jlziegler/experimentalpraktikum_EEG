@@ -1,7 +1,6 @@
 ### EEG Analyse Dorie
 ###
 
-setwd("~/Documents/UNI/Master/M_Sem 4/experimentalpraktikum/experimentalpraktikum_EEG")
 library(eegUtils) 
 library(tidyverse)
 
