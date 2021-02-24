@@ -60,6 +60,7 @@ source("formant_map.R")
 ## Methode
 - Passives Oddball-Design (in beide Richtungen)
   + z.B.: o-o-o-o-o-**u**-o-o-o...
+  + 800 Standards & 120 Deviants (pro Bedingung)
 - EEG: 
   + 32 Elektroden 
   + 500 Hz Samplingrate
@@ -331,7 +332,7 @@ print(summary(aov(amplitude_diff ~ epoch_diff + Error(participant_id),
   + Nicht so intuitiv wie das GUI von EEGLAB & ERPLAB
   + Nicht alle *Channel Locations* erkannt
   + Grand Average nur über Umwege möglich
-  + (Manuelle Korrekturen nicht vorgesehen)
+  + Manuelle Korrekturen nicht vorgesehen (?)
 
 # Quellen
 <small>
